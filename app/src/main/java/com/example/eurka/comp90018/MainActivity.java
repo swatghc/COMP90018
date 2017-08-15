@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    //this is a comment to test the github
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
