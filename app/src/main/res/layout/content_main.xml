@@ -1,40 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.eurka.comp90018.MainActivity"
     tools:showIn="@layout/activity_main">
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/savePasswordCB"
+        android:text="Remeber Password"
+        android:checked="false"
+        android:layout_below="@+id/main_t2"
+        android:layout_alignRight="@+id/main_bt1"
+        android:layout_alignEnd="@+id/main_bt1"
+        android:layout_marginRight="50dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginTop="23dp" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="224dp"
+        android:id="@+id/main_t1"
+        android:text="Account"
+        android:textSize="20dp"
+        android:layout_alignBaseline="@+id/mainAccount"
+        android:layout_alignBottom="@+id/mainAccount"
+        android:layout_toLeftOf="@+id/savePasswordCB"
+        android:layout_toStartOf="@+id/savePasswordCB" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/main_t2"
+        android:text="Password"
+        android:textSize="20dp"
+
+        android:layout_marginTop="241dp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/textView2" />
+        android:layout_alignLeft="@+id/main_t1"
+        android:layout_alignStart="@+id/main_t1" />
 
-    <TextView
-        android:id="@+id/textView3"
+    <EditText
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/mainPassword"
+        android:textSize="20dp"
+        android:layout_alignBaseline="@+id/main_t2"
+        android:layout_alignBottom="@+id/main_t2"
+        android:layout_alignLeft="@+id/mainAccount"
+        android:layout_alignStart="@+id/mainAccount" />
+
+
+
+    <EditText
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/mainAccount"
+
+        android:textSize="20dp"
+        android:layout_marginBottom="66dp"
+        android:layout_above="@+id/mainPassword"
+        android:layout_alignRight="@+id/main_bt1"
+        android:layout_alignEnd="@+id/main_bt1" />
+
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="nice to meet you here in"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:text="Login"
+        android:id="@+id/main_bt1"
+        android:textSize="20dp"
+        android:layout_marginRight="55dp"
+        android:layout_marginEnd="55dp"
+        android:layout_below="@+id/savePasswordCB"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="33dp" />
 
-    <TextView
-        android:id="@+id/textView"
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView3"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="45dp"
-        android:text="@string/title"/>
+        android:text="Register"
+        android:id="@+id/main_btn2"
+        android:textSize="20dp"
+        android:layout_alignBaseline="@+id/main_bt1"
+        android:layout_alignBottom="@+id/main_bt1"
+        android:layout_alignLeft="@+id/main_t2"
+        android:layout_alignStart="@+id/main_t2" />
 
 </RelativeLayout>
