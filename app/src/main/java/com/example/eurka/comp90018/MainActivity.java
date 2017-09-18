@@ -83,7 +83,8 @@ public class MainActivity extends AppCompatActivity {
 
                         Intent intent = new Intent();
 //                        Intent.putExtra("username",accountStr);
-                        intent.setClass(MainActivity.this, UserPageActivity.class);
+//                        intent.setClass(MainActivity.this, UserPageActivity.class);
+                        intent.setClass(MainActivity.this, TrackingActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putString("username",accountStr);
                         intent.putExtras(bundle);
