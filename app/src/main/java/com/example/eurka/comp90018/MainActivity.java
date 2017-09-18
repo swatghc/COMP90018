@@ -26,11 +26,12 @@ public class MainActivity extends AppCompatActivity {
     Button loginButton;
     Button registerButton;
     CheckBox savePasswordCheckBox;
-
+    private final static String TAG="MainActivity";
     SharedPreferences sp;
     String accountStr;
     String passwordStr;
     private DatabaseAdapter mDbHelper;
+    String emergencycontact;
 
 
     @Override
@@ -50,6 +51,18 @@ public class MainActivity extends AppCompatActivity {
         savePasswordCheckBox.setChecked(true);
         passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT
                 | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+        //get emergency contact from registerActivity
+
+
+//        Intent intent1 = this.getIntent();
+//        Bundle bundle = this.getIntent().getExtras();
+//        emergencycontact = bundle.getString("emergencycontact");
+
+
+
+
+
 
         //login
         loginButton.setOnClickListener(new View.OnClickListener(){
@@ -83,11 +96,12 @@ public class MainActivity extends AppCompatActivity {
 
                         Intent intent = new Intent();
 //                        Intent.putExtra("username",accountStr);
-//                        intent.setClass(MainActivity.this, UserPageActivity.class);
-                        intent.setClass(MainActivity.this, TrackingActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putString("username",accountStr);
-                        intent.putExtras(bundle);
+                        intent.setClass(MainActivity.this, UserPageActivity.class);
+//                        intent.setClass(MainActivity.this, TrackingActivity.class);
+                        Bundle bundle1 = new Bundle();
+                        bundle1.putString("username",accountStr);
+                        bundle1.putString("emergencycontact",emergencycontact);
+                        intent.putExtras(bundle1);
                         startActivity(intent);
                     }
                 }
@@ -106,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent();
                 intent.setClass(MainActivity.this, RegisterActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,1);
             }
         });
 
@@ -121,6 +135,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     //this is a comment to test the githubLLLLLLLL
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        emergencycontact = data.getExtras().getString("emergencycontact");//得到新Activity 关闭后返回的数据
+        Log.i(TAG, emergencycontact);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

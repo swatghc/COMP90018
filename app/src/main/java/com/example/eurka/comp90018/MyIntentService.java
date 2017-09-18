@@ -1,10 +1,15 @@
 package com.example.eurka.comp90018;
 
+import android.Manifest;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.google.android.gms.analytics.Tracker;
@@ -86,38 +91,44 @@ public class MyIntentService extends IntentService {
     }
 
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i(TAG, "starting!!");
+        Log.i(TAG, "THIS WAS HIT IN THE BACKGROUND SERVICE");
+        startLogging();
+        return 0;
+    }
+
+
+    @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
-            final String action = intent.getAction();
+            final String action = intent.getStringExtra("action");
+            Log.i(TAG, action);
             if (ACTION_FOO.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionFoo(param1, param2);
+                startLogging();
             } else if (ACTION_BAZ.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionBaz(param1, param2);
+                stopLogging();
             }
         }
     }
 
-    /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionFoo(String param1, String param2) {
-        // TODO: Handle action Foo
-        throw new UnsupportedOperationException("Not yet implemented");
+    @Override
+    public void onDestroy(){
+        Log.i(TAG,"Destroyed!!!");
+        stopLogging();
     }
 
-    /**
-     * Handle action Baz in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionBaz(String param1, String param2) {
-        // TODO: Handle action Baz
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
+    LocationListener locationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            useLocation(location);
+        }
+
+        public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+        public void onProviderEnabled(String provider) {}
+
+        public void onProviderDisabled(String provider) {}
+    };
 
     public void getCurrentLocation(){
         double Default_Lat = 0;
@@ -140,5 +151,66 @@ public class MyIntentService extends IntentService {
         }
         DEFAULT_LATandLNG = new LatLng(Default_Lat,Default_Lng);
 
+    }
+
+    int numberOfHits = 0;
+
+    public void useLocation(Location l) {
+        numberOfHits++;
+        double Default_Lat = 0;
+        double Default_Lng = 0;
+        location= l;
+        if (location != null) {
+            Default_Lat = location.getLatitude();
+            Default_Lng = location.getLongitude();
+        }
+        Log.i(TAG, String.valueOf(Default_Lat)+"  "+numberOfHits);
+        DEFAULT_LATandLNG = new LatLng(Default_Lat, Default_Lng);
+        locationList.add(DEFAULT_LATandLNG);
+    }
+
+    public static final String TRANSACTION_DONE = "done";
+
+    /**
+     * Handle action Foo in the provided background thread with the provided
+     * parameters.
+     */
+    private void handleActionFoo(String param1, String param2) {
+        // TODO: Handle action Foo
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    /**
+     * Handle action Baz in the provided background thread with the provided
+     * parameters.
+     */
+    private void handleActionBaz(String param1, String param2) {
+        // TODO: Handle action Baz
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+
+
+    public void stopLogging() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mTask.cancel();
+        int len = locationList.size();
+        Log.i(TAG, "In STop Logging length is :" + String.valueOf(len));
+        notifyFinished();
+    }
+
+    public void startLogging() {
+        Log.i(TAG, "THIS WAS HIT IN THE BACKGROUND SERVICE");
+        getCurrentLocation();
+    }
+
+    private void notifyFinished(){
+        int len = locationList.size();
+        Log.i(TAG, "In notify Finished the length is :" +String.valueOf(len));
+        Intent i = new Intent(TRANSACTION_DONE);
+        i.putParcelableArrayListExtra("locationData", locationList);
+        MyIntentService.this.sendBroadcast(i);
     }
 }

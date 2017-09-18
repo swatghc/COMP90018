@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseAdapter {
     public static final String KEY_USERNAME = "username";
     public static final String KEY_PASSWORD = "password";
+    public static final String KEY_EMERGENCY_CONTACT = "emergencycontact";
     public static final String KEY_ROWID = "_id";
 
     private DatabaseHelper mDbHelper;
@@ -20,7 +21,7 @@ public class DatabaseAdapter {
 
 
     private static final String DATABASE_CREATE = "create table user (_id integer primary key autoincrement, "
-            + "username text not null, password text not null);";
+            + "username text not null, password text not null, emergencycontact text not null);";
 
     private static final String DATABASE_NAME = "database";
     private static final String DATABASE_TABLE = "user";
@@ -77,10 +78,11 @@ public class DatabaseAdapter {
         mDbHelper.close();
     }
 
-    public long createUser(String username, String password) {
+    public long createUser(String username, String password, String contact) {
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_USERNAME, username);
         initialValues.put(KEY_PASSWORD, password);
+        initialValues.put(KEY_EMERGENCY_CONTACT, contact);
         return mDb.insert(DATABASE_TABLE, null, initialValues);
     }
 
@@ -89,7 +91,7 @@ public class DatabaseAdapter {
     public Cursor getAllNotes() {
 
         return mDb.query(DATABASE_TABLE, new String[] { KEY_ROWID, KEY_USERNAME,
-                KEY_PASSWORD }, null, null, null, null, null);
+                KEY_PASSWORD,KEY_EMERGENCY_CONTACT }, null, null, null, null, null);
     }
 
     public Cursor getDiary(String username) throws SQLException {
@@ -97,7 +99,7 @@ public class DatabaseAdapter {
         Cursor mCursor =
 
                 mDb.query(true, DATABASE_TABLE, new String[] { KEY_ROWID, KEY_USERNAME,
-                                KEY_PASSWORD }, KEY_USERNAME + "='" + username+"'", null, null,
+                                KEY_PASSWORD,KEY_EMERGENCY_CONTACT }, KEY_USERNAME + "='" + username+"'", null, null,
                         null, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();

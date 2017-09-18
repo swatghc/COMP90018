@@ -15,6 +15,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText mUserText;
     private EditText mPasswordText;
     private EditText mConPasswordText;
+    private EditText mEmeContact;
     private DatabaseAdapter databaseHelper;
 
 
@@ -32,9 +33,11 @@ public class RegisterActivity extends AppCompatActivity {
         mConPasswordText = (EditText) findViewById(R.id.conpasswordET);
         mConPasswordText.setInputType(InputType.TYPE_CLASS_TEXT
                 | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        mEmeContact = (EditText)findViewById(R.id.emergencyContact);
 
         Button confirmButton = (Button) findViewById(R.id.regBT);
         Button cancelButton = (Button) findViewById(R.id.canBT);
+
 
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
@@ -43,6 +46,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String username = mUserText.getText().toString();
                 String password = mPasswordText.getText().toString();
                 String conPassword = mConPasswordText.getText().toString();
+                String emeContact = mEmeContact.getText().toString();
 
                 if((username == null||username.equalsIgnoreCase("")) || (password == null||password.equalsIgnoreCase("")) || (conPassword == null||conPassword.equalsIgnoreCase(""))){
                     Toast.makeText(RegisterActivity.this,"must input account name and password!.",
@@ -56,12 +60,15 @@ public class RegisterActivity extends AppCompatActivity {
                         Toast.makeText(RegisterActivity.this, "two passwords inconsistent",
                                 Toast.LENGTH_SHORT).show();
                     }else{
-                        databaseHelper.createUser(username, password);
+                        databaseHelper.createUser(username, password,emeContact);
                         Toast.makeText(RegisterActivity.this, "register success!",
                                 Toast.LENGTH_SHORT).show();
+
                         Intent intent = new Intent();
                         intent.setClass(RegisterActivity.this, MainActivity.class);
-                        startActivity(intent);
+                        intent.putExtra("emergencycontact",emeContact);
+                        RegisterActivity.this.setResult(RESULT_OK,intent);
+                        RegisterActivity.this.finish();
                     }
                 }
             }
