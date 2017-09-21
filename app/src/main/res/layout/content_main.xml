@@ -1,92 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.eurka.comp90018.MainActivity"
-    tools:showIn="@layout/activity_main">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/background_2"
+                tools:context="com.example.eurka.comp90018.MainActivity"
+                tools:showIn="@layout/activity_main">
 
     <CheckBox
+        android:id="@+id/savePasswordCB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/savePasswordCB"
-        android:text="Remeber Password"
-        android:checked="false"
-        android:layout_below="@+id/main_t2"
-        android:layout_alignRight="@+id/main_bt1"
         android:layout_alignEnd="@+id/main_bt1"
-        android:layout_marginRight="50dp"
+        android:layout_alignRight="@+id/main_bt1"
+        android:layout_below="@+id/main_t2"
         android:layout_marginEnd="50dp"
-        android:layout_marginTop="23dp" />
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="23dp"
+        android:checked="false"
+        android:text="Remeber Password"/>
 
     <TextView
+        android:id="@+id/main_t1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/main_t1"
-        android:text="Account"
-        android:textSize="20dp"
         android:layout_alignBaseline="@+id/mainAccount"
         android:layout_alignBottom="@+id/mainAccount"
         android:layout_toLeftOf="@+id/savePasswordCB"
-        android:layout_toStartOf="@+id/savePasswordCB" />
+        android:layout_toStartOf="@+id/savePasswordCB"
+        android:text="Account"
+        android:textSize="20dp"/>
 
     <TextView
+        android:id="@+id/main_t2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/main_t2"
-        android:text="Password"
-        android:textSize="20dp"
-
-        android:layout_marginTop="241dp"
-        android:layout_alignParentTop="true"
         android:layout_alignLeft="@+id/main_t1"
-        android:layout_alignStart="@+id/main_t1" />
+        android:layout_alignParentTop="true"
+
+        android:layout_alignStart="@+id/main_t1"
+        android:layout_marginTop="241dp"
+        android:text="Password"
+        android:textSize="20dp"/>
 
     <EditText
+        android:id="@+id/mainPassword"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:id="@+id/mainPassword"
-        android:textSize="20dp"
         android:layout_alignBaseline="@+id/main_t2"
         android:layout_alignBottom="@+id/main_t2"
         android:layout_alignLeft="@+id/mainAccount"
-        android:layout_alignStart="@+id/mainAccount" />
-
+        android:layout_alignStart="@+id/mainAccount"
+        android:textSize="20dp"/>
 
 
     <EditText
+        android:id="@+id/mainAccount"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:id="@+id/mainAccount"
 
-        android:textSize="20dp"
-        android:layout_marginBottom="66dp"
         android:layout_above="@+id/mainPassword"
+        android:layout_alignEnd="@+id/main_bt1"
         android:layout_alignRight="@+id/main_bt1"
-        android:layout_alignEnd="@+id/main_bt1" />
+        android:layout_marginBottom="66dp"
+        android:textSize="20dp"/>
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Login"
         android:id="@+id/main_bt1"
-        android:textSize="20dp"
-        android:layout_marginRight="55dp"
-        android:layout_marginEnd="55dp"
-        android:layout_below="@+id/savePasswordCB"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="33dp" />
-
-    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Register"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/savePasswordCB"
+        android:layout_marginEnd="55dp"
+        android:layout_marginRight="55dp"
+        android:layout_marginTop="33dp"
+        android:text="Login"
+        android:textSize="20dp"/>
+
+    <Button
         android:id="@+id/main_btn2"
-        android:textSize="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/main_bt1"
         android:layout_alignBottom="@+id/main_bt1"
         android:layout_alignLeft="@+id/main_t2"
-        android:layout_alignStart="@+id/main_t2" />
+        android:layout_alignStart="@+id/main_t2"
+        android:text="Register"
+        android:textSize="20dp"/>
 
 </RelativeLayout>
