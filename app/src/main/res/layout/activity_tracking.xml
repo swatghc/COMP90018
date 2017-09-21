@@ -55,6 +55,7 @@
             android:layout_weight="1"
             android:backgroundTint="@android:color/holo_orange_light"
             android:onClick="emergencyFunction"
-            android:text="SOS"/>
+            android:text="SOS"
+            android:textStyle="bold"/>
     </LinearLayout>
 </LinearLayout>
