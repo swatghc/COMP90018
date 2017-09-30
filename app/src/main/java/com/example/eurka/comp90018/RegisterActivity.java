@@ -64,11 +64,14 @@ public class RegisterActivity extends AppCompatActivity {
                         Toast.makeText(RegisterActivity.this, "register success!",
                                 Toast.LENGTH_SHORT).show();
 
+//                        Intent intent = new Intent();
+//                        intent.setClass(RegisterActivity.this, MainActivity.class);
+//                        intent.putExtra("emergencycontact",emeContact);
+//                        RegisterActivity.this.setResult(RESULT_OK,intent);
+//                        RegisterActivity.this.finish();
                         Intent intent = new Intent();
-                        intent.setClass(RegisterActivity.this, MainActivity.class);
-                        intent.putExtra("emergencycontact",emeContact);
-                        RegisterActivity.this.setResult(RESULT_OK,intent);
-                        RegisterActivity.this.finish();
+                        intent.setClass(RegisterActivity.this,MainActivity.class);
+                        startActivity(intent);
                     }
                 }
             }

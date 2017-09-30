@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.location.Geocoder;
 import android.location.Location;
@@ -27,14 +29,30 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import android.telephony.SmsManager;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.text.SimpleDateFormat;
+import java.net.HttpURLConnection;
 
 
 public class TrackingActivity extends FragmentActivity implements OnMapReadyCallback{
@@ -51,6 +69,14 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
     private String username;
     private String emergencycontact;
     private double totalDistance;
+    private Date startTime;
+    private Date endTime;
+    private String duriation;
+    private String currentLocation;
+    private SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日   HH:mm:ss");
+    volatile boolean shutdown = false;
+    private DatabaseAdapter.DatabaseHelper dbHelper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,11 +91,26 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
         //receive user id from main
         Bundle bundle = this.getIntent().getExtras();
         username = bundle.getString("username");
-        emergencycontact = bundle.getString("emergencycontact");
+
+        dbHelper = new DatabaseAdapter.DatabaseHelper(this);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query("user",null, null, null, null, null,null);
+
+        String emeContact = "";
+        while(cursor.moveToNext()){
+            String username = cursor.getString(cursor.getColumnIndex("username"));
+            emeContact = cursor.getString(cursor.getColumnIndex("emergencycontact"));
+        }
+
+        if(!emeContact.equals("")){
+            emergencycontact = emeContact;
+        }
+        Log.i("hello","EMS  "+emergencycontact);
+
 
         layout= (LinearLayout)findViewById(R.id.layout);
-        submitButton= (Button) findViewById(R.id.submitButton);
-        submitButton.setEnabled(false);
+//        submitButton= (Button) findViewById(R.id.submitButton);
+//        submitButton.setEnabled(false);
 
         //only receive intent when intentService finsh the task
         IntentFilter intentFilter = new IntentFilter();
@@ -113,8 +154,11 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
         layout.setBackgroundColor(Color.parseColor("#51b46d"));
         Log.i("hello",emergencycontact);
         service = new Intent(this, MyIntentService.class);
-
         startService(service);
+        startTime =  new Date(System.currentTimeMillis());
+        String string = format.format(startTime);
+        Log.i("hello","begin   "+string);
+
     }
 
     public void getCurrentLocation(){
@@ -144,53 +188,67 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
     //stop logging track
     public void stopLogging(View view){
         layout.setBackgroundColor(Color.parseColor("#39add1"));
-        submitButton.setEnabled(true);
+        //submitButton.setEnabled(true);
         stopService(service);
+
+        endTime =  new Date(System.currentTimeMillis());
+        String string = format.format(endTime);
+        Log.i("hello","stop   "+string);
+        long dur = endTime.getTime()-startTime.getTime();
+        duriation = formattingMs(dur);
+        Log.i("hello",duriation);
+
+
+        Toast.makeText(TrackingActivity.this, "Total Distance: "+totalDistance+"KM"+"  Spent Time: "+duriation, Toast.LENGTH_SHORT).show();
+
+    }
+
+    public String formattingMs(long period){
+        Integer seconds = (int) (period / 1000) % 60 ;
+        Integer minutes = (int) ((period / (1000*60)) % 60);
+        Integer hours   = (int) ((period / (1000*60*60)) % 24);
+        String s = seconds.toString();
+        String m = minutes.toString();
+        String h = hours.toString();
+        return h+":"+m+":"+s;
+    }
+
+    public void sumbit(View view){
+
     }
 
     public void emergencyFunction(View view){
-        layout.setBackgroundColor(Color.parseColor("#38d145"));
-        Log.d("hello","you are here!");
-        Log.d("hello",emergencycontact);
-        SmsManager smsManager = SmsManager.getDefault();
         getCurrentLocation();
-        //error
-        String location = LatLngtoAddress(DEFAULT_LATandLNG);
-        String text = "you friend "+username+" encounters emergency,current location: "
-                +location;
-        Log.d("hello",text);
-        Toast.makeText(TrackingActivity.this, text,
-                Toast.LENGTH_SHORT).show();
+        layout.setBackgroundColor(Color.parseColor("#38d145"));
 
-        smsManager.sendTextMessage(emergencycontact,null,text,null,null);
-        Toast.makeText(TrackingActivity.this, "发送完毕", Toast.LENGTH_SHORT).show();
-        stopService(service);
+        new Thread(runnable).start();
+
+       if(currentLocation!=null){
+           SmsManager smsManager = SmsManager.getDefault();
+
+           String text = "you friend "+username+" encounters emergency,current location: "
+                   +currentLocation;
+           Log.i("hello",text);
+
+           Toast.makeText(TrackingActivity.this, text,
+                   Toast.LENGTH_SHORT).show();
+
+           smsManager.sendTextMessage(emergencycontact,null,text,null,null);
+           Toast.makeText(TrackingActivity.this, "发送完毕", Toast.LENGTH_SHORT).show();
+       }
+
+//        stopService(service);
 
     }
 
-    public String LatLngtoAddress(LatLng latLng){
-        Geocoder geocoder;
-        List<android.location.Address> addresses;
-        geocoder = new Geocoder(this, Locale.getDefault());
-
-        try{
-            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-
-            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-            String city = addresses.get(0).getLocality();
-            String state = addresses.get(0).getAdminArea();
-            String country = addresses.get(0).getCountryName();
-            String postalCode = addresses.get(0).getPostalCode();
-            String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
-
-            return  address+" "+postalCode+" "+city;
-
-        }catch (IOException e){
-            e.printStackTrace();
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            currentLocation = getCurrentLocationViaJSON(DEFAULT_LATandLNG.latitude,DEFAULT_LATandLNG.longitude);
+            Log.i("Hello",currentLocation);
         }
-        return null;
+    };
 
-    }
 
     private BroadcastReceiver locationReceiver = new BroadcastReceiver() {
         @Override
@@ -199,14 +257,14 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
             locationArray = intent.getParcelableArrayListExtra("locationData");
             LatLng[] array = new LatLng[locationArray.size()];
             int len = array.length;
-            Log.i(TAG, "the array lenght is:"+String.valueOf(len));
+            //Log.i(TAG, "the array lenght is:"+String.valueOf(len));
             locationArray.toArray(array);
             for (int i=0; i < array.length; i++) {
                 double lat = array[i].latitude;
                 Log.i(TAG, String.valueOf(lat));
                 mMap.addCircle(new CircleOptions()
                         .center(array[i])
-                        .radius(8)
+                        .radius(9)
                         .fillColor(0x7f0000ff)
                         .strokeWidth(0));
             }
@@ -251,6 +309,85 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
                 + " Meter   " + meterInDec);
 
         return Radius * c;
+    }
+
+    public static JSONObject getLocationInfo(double lat, double lng) {
+        try{
+            URL url = new URL("http://maps.googleapis.com/maps/api/geocode/json?latlng="+ lat+","+lng +"&sensor=true");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            InputStream in = new BufferedInputStream(connection.getInputStream());
+
+            StringBuilder stringBuilder = new StringBuilder();
+            int b;
+            while ((b = in.read()) != -1) {
+                stringBuilder.append((char) b);
+            }
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject = new JSONObject(stringBuilder.toString());
+            Log.i("hello","GEO "+jsonObject.toString());
+
+            return jsonObject;
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+
+        return null;
+    }
+
+    public static String getCurrentLocationViaJSON(double lat, double lng) {
+
+        JSONObject jsonObj = getLocationInfo(lat, lng);
+        Log.i("JSON string =>", jsonObj.toString());
+
+        String currentLocation = "testing";
+        String street_address = null;
+        String postal_code = null;
+
+        try {
+            String status = jsonObj.getString("status").toString();
+            Log.i("status", status);
+
+            if(status.equalsIgnoreCase("OK")){
+                JSONArray results = jsonObj.getJSONArray("results");
+                int i = 0;
+                Log.i("i", i+ "," + results.length() ); //TODO delete this
+                do{
+
+                    JSONObject r = results.getJSONObject(i);
+                    JSONArray typesArray = r.getJSONArray("types");
+                    String types = typesArray.getString(0);
+
+                    if(types.equalsIgnoreCase("street_address")){
+                        street_address = r.getString("formatted_address").split(",")[0];
+                        Log.i("street_address", street_address);
+                    }else if(types.equalsIgnoreCase("postal_code")){
+                        postal_code = r.getString("formatted_address");
+                        Log.i("postal_code", postal_code);
+                    }
+
+                    if(street_address!=null && postal_code!=null){
+                        currentLocation = street_address + "," + postal_code;
+                        Log.i("Current Location =>", currentLocation); //Delete this
+                        i = results.length();
+                    }
+
+                    i++;
+                }while(i<results.length());
+
+                Log.i("JSON Geo Locatoin =>", currentLocation);
+                return currentLocation;
+            }
+
+        } catch (JSONException e) {
+            Log.e("testing","Failed to load JSON");
+            e.printStackTrace();
+        }
+        return null;
     }
 
 

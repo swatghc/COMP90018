@@ -46,13 +46,7 @@ public class MyIntentService extends IntentService {
         super("MyIntentService");
     }
 
-    /**
-     * Starts this service to perform action Foo with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
+
     public static void startActionFoo(Context context, String param1, String param2) {
         Intent intent = new Intent(context, MyIntentService.class);
         intent.setAction(ACTION_FOO);
@@ -63,37 +57,9 @@ public class MyIntentService extends IntentService {
 
 
 
-    public TimerTask mTask = new TimerTask() {
-        public void run() {
-            getCurrentLocation();
-            double lat = DEFAULT_LATandLNG.latitude;
-            Log.i(TAG, "timer task latitiude is : " + String.valueOf(lat));
-            locationList.add(DEFAULT_LATandLNG);
-            int len = locationList.size();
-            Log.i(TAG, "before it is sent the length is :" + String.valueOf(len));
-        }
-    };
-
-
-    /**
-     * Starts this service to perform action Baz with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
-    public static void startActionBaz(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, MyIntentService.class);
-        intent.setAction(ACTION_BAZ);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
-        context.startService(intent);
-    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "starting!!");
-        Log.i(TAG, "THIS WAS HIT IN THE BACKGROUND SERVICE");
         startLogging();
         return 0;
     }
@@ -112,6 +78,65 @@ public class MyIntentService extends IntentService {
         }
     }
 
+
+
+
+
+//    public void getCurrentLocation(){
+//        double Default_Lat = 0;
+//        double Default_Lng = 0;
+//        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//        List<String> providers = locationManager.getProviders(true);
+//        Location location;
+//        for(String provider : providers){
+//            try{
+//                location = locationManager.getLastKnownLocation(provider);
+//                if(location!= null){
+//                    Default_Lat = location.getLatitude();
+//                    Default_Lng = location.getLongitude();
+//                    break;
+//                }
+//
+//            }catch (SecurityException e){
+//                e.printStackTrace();
+//            }
+//        }
+//        DEFAULT_LATandLNG = new LatLng(Default_Lat,Default_Lng);
+//
+//    }
+
+
+
+
+
+
+
+
+    public void startLogging() {
+        Log.i(TAG, "THIS WAS HIT IN THE BACKGROUND SERVICE");
+        getCurrentLocation();
+    }
+
+    public TimerTask mTask = new TimerTask() {
+        public void run() {
+            getCurrentLocation();
+            double lat = DEFAULT_LATandLNG.latitude;
+            Log.i(TAG, "timer task latitiude is : " + String.valueOf(lat));
+            locationList.add(DEFAULT_LATandLNG);
+            int len = locationList.size();
+            Log.i(TAG, "before it is sent the length is :" + String.valueOf(len));
+        }
+    };
+
+    public void stopLogging() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mTask.cancel();
+        int len = locationList.size();
+        Log.i(TAG, "In STop Logging length is :" + String.valueOf(len));
+        notifyFinished();
+    }
     @Override
     public void onDestroy(){
         Log.i(TAG,"Destroyed!!!");
@@ -120,6 +145,7 @@ public class MyIntentService extends IntentService {
 
     LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
+
             useLocation(location);
         }
 
@@ -131,25 +157,19 @@ public class MyIntentService extends IntentService {
     };
 
     public void getCurrentLocation(){
-        double Default_Lat = 0;
-        double Default_Lng = 0;
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        List<String> providers = locationManager.getProviders(true);
-        Location location;
-        for(String provider : providers){
-            try{
-                location = locationManager.getLastKnownLocation(provider);
-                if(location!= null){
-                    Default_Lat = location.getLatitude();
-                    Default_Lng = location.getLongitude();
-                    break;
-                }
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        List<String> providers = lm.getProviders(true);
+        for (int i = 0; i < providers.size(); i++) {
+            Log.i(TAG, providers.get(i));
 
-            }catch (SecurityException e){
+            try {
+                location = lm.getLastKnownLocation(providers.get(i));
+                lm.requestLocationUpdates(providers.get(i),5000,0,locationListener);
+
+            } catch (SecurityException e) {
                 e.printStackTrace();
             }
         }
-        DEFAULT_LATandLNG = new LatLng(Default_Lat,Default_Lng);
 
     }
 
@@ -170,41 +190,6 @@ public class MyIntentService extends IntentService {
     }
 
     public static final String TRANSACTION_DONE = "done";
-
-    /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionFoo(String param1, String param2) {
-        // TODO: Handle action Foo
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    /**
-     * Handle action Baz in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionBaz(String param1, String param2) {
-        // TODO: Handle action Baz
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-
-
-    public void stopLogging() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        mTask.cancel();
-        int len = locationList.size();
-        Log.i(TAG, "In STop Logging length is :" + String.valueOf(len));
-        notifyFinished();
-    }
-
-    public void startLogging() {
-        Log.i(TAG, "THIS WAS HIT IN THE BACKGROUND SERVICE");
-        getCurrentLocation();
-    }
 
     private void notifyFinished(){
         int len = locationList.size();

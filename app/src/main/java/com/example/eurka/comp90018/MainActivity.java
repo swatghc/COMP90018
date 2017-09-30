@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
 //                        intent.setClass(MainActivity.this, TrackingActivity.class);
                         Bundle bundle1 = new Bundle();
                         bundle1.putString("username",accountStr);
-                        bundle1.putString("emergencycontact",emergencycontact);
+                        //bundle1.putString("emergencycontact",emergencycontact);
                         intent.putExtras(bundle1);
                         startActivity(intent);
                     }
@@ -136,11 +136,11 @@ public class MainActivity extends AppCompatActivity {
     }
     //this is a comment to test the githubLLLLLLLL
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        emergencycontact = data.getExtras().getString("emergencycontact");//得到新Activity 关闭后返回的数据
-        Log.i(TAG, emergencycontact);
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        emergencycontact = data.getExtras().getString("emergencycontact");//得到新Activity 关闭后返回的数据
+//        Log.i(TAG, emergencycontact);
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
