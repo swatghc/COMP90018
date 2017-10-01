@@ -78,40 +78,6 @@ public class MyIntentService extends IntentService {
         }
     }
 
-
-
-
-
-//    public void getCurrentLocation(){
-//        double Default_Lat = 0;
-//        double Default_Lng = 0;
-//        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//        List<String> providers = locationManager.getProviders(true);
-//        Location location;
-//        for(String provider : providers){
-//            try{
-//                location = locationManager.getLastKnownLocation(provider);
-//                if(location!= null){
-//                    Default_Lat = location.getLatitude();
-//                    Default_Lng = location.getLongitude();
-//                    break;
-//                }
-//
-//            }catch (SecurityException e){
-//                e.printStackTrace();
-//            }
-//        }
-//        DEFAULT_LATandLNG = new LatLng(Default_Lat,Default_Lng);
-//
-//    }
-
-
-
-
-
-
-
-
     public void startLogging() {
         Log.i(TAG, "THIS WAS HIT IN THE BACKGROUND SERVICE");
         getCurrentLocation();

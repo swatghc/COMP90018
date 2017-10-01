@@ -68,7 +68,7 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
     private Button submitButton;
     private String username;
     private String emergencycontact;
-    private double totalDistance;
+    private float totalDistance = 0;
     private Date startTime;
     private Date endTime;
     private String duriation;
@@ -199,7 +199,7 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
         Log.i("hello",duriation);
 
 
-        Toast.makeText(TrackingActivity.this, "Total Distance: "+totalDistance+"KM"+"  Spent Time: "+duriation, Toast.LENGTH_SHORT).show();
+        Toast.makeText(TrackingActivity.this, "Total Distance: "+totalDistance+"M"+"  Spent Time: "+duriation, Toast.LENGTH_SHORT).show();
 
     }
 
@@ -213,9 +213,9 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
         return h+":"+m+":"+s;
     }
 
-    public void sumbit(View view){
-
-    }
+//    public void sumbit(View view){
+//
+//    }
 
     public void emergencyFunction(View view){
         getCurrentLocation();
@@ -264,16 +264,18 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
                 Log.i(TAG, String.valueOf(lat));
                 mMap.addCircle(new CircleOptions()
                         .center(array[i])
-                        .radius(9)
+                        .radius(6)
                         .fillColor(0x7f0000ff)
                         .strokeWidth(0));
             }
 
-            double distance = 0;
+//            float distance = 0;
             for (int i=0;i < array.length-1; i++) {
-                distance = distance + CalculationByDistance(array[i],array[i+1]);
+                float[] results = new float[1];
+                Location.distanceBetween(array[i].latitude,array[i].longitude,array[i+1].latitude,array[i+1].longitude,results);
+//                distance = distance + CalculationByDistance(array[i],array[i+1]);
+                totalDistance = totalDistance + results[0];
             }
-            totalDistance = distance;
 
         }
     };
@@ -311,6 +313,7 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
         return Radius * c;
     }
 
+    //convert LatLng object to actual address via HTTP GET to google service.
     public static JSONObject getLocationInfo(double lat, double lng) {
         try{
             URL url = new URL("http://maps.googleapis.com/maps/api/geocode/json?latlng="+ lat+","+lng +"&sensor=true");
@@ -339,6 +342,7 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
         return null;
     }
 
+    //parseJSONobject to readable String
     public static String getCurrentLocationViaJSON(double lat, double lng) {
 
         JSONObject jsonObj = getLocationInfo(lat, lng);
