@@ -28,9 +28,9 @@ public class UserPageActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent1 = new Intent();
                 intent1.setClass(UserPageActivity.this, TrackingActivity.class);
-//                Bundle bundle1 = new Bundle();
-//                bundle1.putString("username",username);
-//                intent1.putExtras(bundle1);
+                Bundle bundle1 = new Bundle();
+                bundle1.putString("username",username);
+                intent1.putExtras(bundle1);
                 intent1.putExtras(bundle);
                 startActivity(intent1);
 

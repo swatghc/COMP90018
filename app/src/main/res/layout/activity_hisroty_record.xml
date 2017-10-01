@@ -6,4 +6,11 @@
     android:layout_height="match_parent"
     tools:context="com.example.eurka.comp90018.HisrotyRecordActivity">
 
+    <ListView
+        android:id="@+id/listViewToDo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/row_list_to_do"
+        android:padding="6dp" />
+
 </android.support.constraint.ConstraintLayout>
