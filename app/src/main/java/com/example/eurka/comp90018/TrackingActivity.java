@@ -11,6 +11,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -197,9 +198,12 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
         long dur = endTime.getTime()-startTime.getTime();
         duriation = formattingMs(dur);
         Log.i("hello",duriation);
-
-
-        Toast.makeText(TrackingActivity.this, "Total Distance: "+totalDistance+"M"+"  Spent Time: "+duriation, Toast.LENGTH_SHORT).show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(TrackingActivity.this);
+        builder.setIcon(R.drawable.logo);
+        builder.setMessage("Your Running Status: "+"\n"+
+                "Total Distance: "+totalDistance+"M"+"\n"+"Spent Time: "+duriation);
+        builder.show();
+        //Toast.makeText(TrackingActivity.this, "Total Distance: "+totalDistance+"M"+"  Spent Time: "+duriation, Toast.LENGTH_SHORT).show();
 
     }
 
@@ -234,7 +238,9 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
                    Toast.LENGTH_SHORT).show();
 
            smsManager.sendTextMessage(emergencycontact,null,text,null,null);
-           Toast.makeText(TrackingActivity.this, "发送完毕", Toast.LENGTH_SHORT).show();
+           Toast.makeText(TrackingActivity.this, "SMS sent", Toast.LENGTH_SHORT).show();
+
+
        }
 
 //        stopService(service);
@@ -272,6 +278,7 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
 //            float distance = 0;
             for (int i=0;i < array.length-1; i++) {
                 float[] results = new float[1];
+                //Location.distance method can calculate better than
                 Location.distanceBetween(array[i].latitude,array[i].longitude,array[i+1].latitude,array[i+1].longitude,results);
 //                distance = distance + CalculationByDistance(array[i],array[i+1]);
                 totalDistance = totalDistance + results[0];
@@ -359,7 +366,7 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
             if(status.equalsIgnoreCase("OK")){
                 JSONArray results = jsonObj.getJSONArray("results");
                 int i = 0;
-                Log.i("i", i+ "," + results.length() ); //TODO delete this
+                Log.i("i", i+ "," + results.length() );
                 do{
 
                     JSONObject r = results.getJSONObject(i);
@@ -376,7 +383,7 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
 
                     if(street_address!=null && postal_code!=null){
                         currentLocation = street_address + "," + postal_code;
-                        Log.i("Current Location =>", currentLocation); //Delete this
+                        Log.i("Current Location =>", currentLocation);
                         i = results.length();
                     }
 
