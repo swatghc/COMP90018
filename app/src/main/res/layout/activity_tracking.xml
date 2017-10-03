@@ -19,32 +19,43 @@
         android:layout_weight="1">
 
         <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="START"
             android:id="@+id/startButton"
-            android:onClick="startLogging"/>
-        <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="End"
+            android:backgroundTint="@android:color/holo_orange_light"
+            android:onClick="startLogging"
+            android:text="START"
+            android:textStyle="bold"/>
+
+        <Button
             android:id="@+id/endButton"
-            android:onClick="stopLogging"/>
-        <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Save"
+            android:backgroundTint="@android:color/holo_orange_light"
+            android:onClick="stopLogging"
+            android:text="End"
+            android:textStyle="bold"/>
+
+        <Button
             android:id="@+id/submitButton"
-            android:onClick="submit"/>
-        <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="SOS"
+            android:backgroundTint="@android:color/holo_orange_light"
+            android:onClick="submit"
+            android:text="Save"
+            android:textStyle="bold"/>
+
+        <Button
             android:id="@+id/emergency"
-            android:onClick="emergencyFunction"/>
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@android:color/holo_orange_light"
+            android:onClick="emergencyFunction"
+            android:text="SOS"
+            android:textStyle="bold"/>
     </LinearLayout>
 </LinearLayout>
