@@ -24,6 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:backgroundTint="@android:color/holo_orange_light"
+            android:background="@drawable/rounded_button"
             android:onClick="startLogging"
             android:text="START"
             android:textStyle="bold"/>
@@ -34,6 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:backgroundTint="@android:color/holo_orange_light"
+            android:background="@drawable/rounded_button"
             android:onClick="stopLogging"
             android:text="End"
             android:textStyle="bold"/>
@@ -44,6 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:backgroundTint="@android:color/holo_orange_light"
+            android:background="@drawable/rounded_button"
             android:onClick="submit"
             android:text="Save"
             android:textStyle="bold"/>
@@ -54,6 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:backgroundTint="@android:color/holo_orange_light"
+            android:background="@drawable/rounded_button"
             android:onClick="emergencyFunction"
             android:text="SOS"
             android:textStyle="bold"/>

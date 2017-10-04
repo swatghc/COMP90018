@@ -70,6 +70,7 @@
 
     <Button
         android:id="@+id/main_bt1"
+        style="@style/Widget.AppCompat.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -78,21 +79,23 @@
         android:layout_marginEnd="55dp"
         android:layout_marginRight="55dp"
         android:layout_marginTop="33dp"
-        android:background="@android:color/holo_orange_light"
+        android:backgroundTint="@android:color/holo_orange_light"
+        android:background="@drawable/rounded_button"
         android:text="Login"
         android:textSize="20dp"
         android:textStyle="bold"/>
 
     <Button
         android:id="@+id/main_btn2"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/main_bt1"
         android:layout_alignBottom="@+id/main_bt1"
         android:layout_alignLeft="@+id/main_t2"
         android:layout_alignStart="@+id/main_t2"
-        android:background="@android:color/holo_orange_light"
         android:backgroundTint="@android:color/holo_orange_light"
+        android:background="@drawable/rounded_button"
         android:text="Register"
         android:textSize="20dp"
         android:textStyle="bold"/>
