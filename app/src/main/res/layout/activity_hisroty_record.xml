@@ -8,9 +8,11 @@
 
         <ListView
             android:id="@+id/listViewToDo"
-            android:layout_width="match_parent"
+            android:layout_width="368dp"
             android:layout_height="wrap_content"
             tools:listitem="@layout/row_list_to_do"
-            android:padding="6dp" />
+            android:padding="6dp"
+            tools:layout_editor_absoluteY="0dp"
+            tools:layout_editor_absoluteX="8dp" />
 
 </android.support.constraint.ConstraintLayout>

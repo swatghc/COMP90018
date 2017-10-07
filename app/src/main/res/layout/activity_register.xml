@@ -7,7 +7,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@drawable/background_2"
+        android:background="@drawable/runwhite"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -15,8 +15,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sign Up"
+            android:textColor="@color/cast_libraries_material_featurehighlight_text_body_color"
             android:textSize="25sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="250dp"
@@ -47,14 +48,16 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="10dp"
                             android:text="Account"
+                            android:textColor="@color/cast_libraries_material_featurehighlight_text_body_color"
                             android:textSize="15sp"
-                            android:textStyle="bold"/>
+                            android:textStyle="bold" />
 
                         <EditText
                             android:id="@+id/userNameAuto"
                             android:layout_width="fill_parent"
                             android:layout_height="50dp"
-                            android:ems="10"></EditText>
+                            android:ems="10"
+                            android:textColor="@color/cast_libraries_material_featurehighlight_text_body_color"></EditText>
 
                     </LinearLayout>
 
@@ -69,12 +72,14 @@
                             android:layout_marginRight="10dp"
                             android:text="@string/password"
                             android:textSize="15sp"
+                            android:textColor="@color/cast_libraries_material_featurehighlight_text_body_color"
                             android:textStyle="bold"/>
 
                         <EditText
                             android:id="@+id/password"
                             android:layout_width="fill_parent"
-                            android:layout_height="50dp"></EditText>
+                            android:layout_height="50dp"
+                            android:textColor="@color/cast_libraries_material_featurehighlight_text_body_color"></EditText>
                     </LinearLayout>
 
 
@@ -89,12 +94,14 @@
                             android:layout_marginRight="10dp"
                             android:text="Confirm Password"
                             android:textSize="15sp"
+                            android:textColor="@color/cast_libraries_material_featurehighlight_text_body_color"
                             android:textStyle="bold"/>
 
                         <EditText
                             android:id="@+id/conpasswordET"
                             android:layout_width="fill_parent"
-                            android:layout_height="50dp"></EditText>
+                            android:layout_height="50dp"
+                            android:textColor="@color/cast_libraries_material_featurehighlight_text_body_color"></EditText>
                     </LinearLayout>
 
 
@@ -109,12 +116,14 @@
                             android:layout_marginRight="10dp"
                             android:text="Emergency Contact"
                             android:textSize="15sp"
+                            android:textColor="@color/cast_libraries_material_featurehighlight_text_body_color"
                             android:textStyle="bold"/>
 
                         <EditText
                             android:id="@+id/emergencyContact"
                             android:layout_width="fill_parent"
-                            android:layout_height="50dp"></EditText>
+                            android:layout_height="50dp"
+                            android:textColor="@color/cast_libraries_material_featurehighlight_text_body_color"></EditText>
                     </LinearLayout>
 
 
