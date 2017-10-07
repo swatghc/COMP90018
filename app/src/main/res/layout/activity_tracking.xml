@@ -8,15 +8,39 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="9">
+        android:layout_weight="9.70">
     </fragment>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/layout"
-        android:layout_alignParentBottom="true"
+
+
+    <TextView
+        android:id="@+id/result"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/seekBar"
+        android:text="Hello World!"
+        android:textAlignment="center"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textSpeedLimit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="5m/s                                                                                     10m/s"
+        android:textAlignment="center" />
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="5"
+        android:progress="1"/>
+
+    <LinearLayout
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/startButton"
@@ -27,7 +51,7 @@
             android:background="@drawable/rounded_button"
             android:onClick="startLogging"
             android:text="START"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/endButton"
@@ -38,7 +62,7 @@
             android:background="@drawable/rounded_button"
             android:onClick="stopLogging"
             android:text="End"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/submitButton"
@@ -49,17 +73,19 @@
             android:background="@drawable/rounded_button"
             android:onClick="submit"
             android:text="Save"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/emergency"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="@android:color/holo_orange_light"
-            android:background="@drawable/rounded_button"
+            android:backgroundTint="@android:color/holo_orange_dark"
             android:onClick="emergencyFunction"
             android:text="SOS"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
+
+
     </LinearLayout>
+
 </LinearLayout>

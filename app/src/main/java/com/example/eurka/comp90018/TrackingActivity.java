@@ -9,39 +9,34 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.telephony.SmsManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.identity.intents.Address;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.NextServiceFilterCallback;
 import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
@@ -56,30 +51,21 @@ import com.microsoft.windowsazure.mobileservices.table.sync.localstore.SQLiteLoc
 import com.microsoft.windowsazure.mobileservices.table.sync.synchandler.SimpleSyncHandler;
 import com.squareup.okhttp.OkHttpClient;
 
-import android.telephony.SmsManager;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.Toast;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.text.SimpleDateFormat;
-import java.net.HttpURLConnection;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -103,9 +89,13 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
     private Date endTime;
     private String duriation;
     private String currentLocation;
-    private SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日   HH:mm:ss");
+    private SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd/   HH:mm:ss");
     volatile boolean shutdown = false;
     private DatabaseAdapter.DatabaseHelper dbHelper;
+
+    private float speed;
+    private float speedLimit;
+    private MediaPlayer stopSoundMP;
 
 
     /**
@@ -120,10 +110,60 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
 
     private ProgressDialog progressDialog;
 
+
+
+    private SeekBar seekBar;
+    private TextView textView;
+    private TextView textView6;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
+
+//        final MediaPlayer stopSoundMP = MediaPlayer.create(this, R.sound1.stop);
+        MediaPlayer stopSoundMP = MediaPlayer.create(this, R.raw.stopsound);
+
+
+
+        initializeVariables();
+        seekBar.incrementProgressBy(1);
+        // Initialize the textview with '0'.
+        textView.setText("SPEED LIMIT: " + (seekBar.getProgress()+5) + "m/s");
+
+
+        seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+            int progress = 7;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progresValue, boolean fromUser) {
+                progress = progresValue+5;
+                textView.setText("SPEED LIMIT: " + progress + "m/s"/* + seekBar.getMax()*/);
+                speedLimit = progress;
+//                Toast.makeText(getApplicationContext(), progress+"m/s"/*"Changing seekbar's progress"*/, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+//                Toast.makeText(getApplicationContext(), "Started tracking seekbar", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+//                textView.setText("Current Speed Limit: " + seekBar.getProgress() + "m/s"/* + seekBar.getMax()*/);
+//                Toast.makeText(getApplicationContext(), "Stopped tracking seekbar", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), progress+"m/s"/*"Changing seekbar's progress"*/, Toast.LENGTH_SHORT).show();
+
+
+        }
+        });
+
+
+
+
+
+
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -373,7 +413,8 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
         @Override
         public void run() {
             currentLocation = getCurrentLocationViaJSON(DEFAULT_LATandLNG.latitude, DEFAULT_LATandLNG.longitude);
-            Log.i("Hello", currentLocation);
+
+            Log.i("Hey", currentLocation);
         }
     };
 
@@ -470,6 +511,7 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
     public static String getCurrentLocationViaJSON(double lat, double lng) {
 
         JSONObject jsonObj = getLocationInfo(lat, lng);
+        Log.i("hello",jsonObj.toString());
         Log.i("JSON string =>", jsonObj.toString());
 
         String currentLocation = "testing";
@@ -662,6 +704,73 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
 
         return runAsyncTask(task);
     }
+
+
+    // A private method to help us initialize our variables.
+    private void initializeVariables() {
+        seekBar = (SeekBar) findViewById(R.id.seekBar);
+        textView = (TextView) findViewById(R.id.result);
+//        textView6 = (TextView) findViewById(R.id.textView6);
+    }
+
+    public void speedLimitFunction(View view) {
+        getCurrentLocation();
+        getCurrentSpeed();
+        layout.setBackgroundColor(Color.parseColor("#38d145"));
+
+        new Thread(runnable).start();
+
+        if (currentLocation != null) {
+            new Thread(runnable2).start();
+
+            if(speed>speedLimit){
+                stopSoundMP.start();
+            }
+            Toast.makeText(TrackingActivity.this, "Sound begin", Toast.LENGTH_SHORT).show();
+        }
+
+//        stopService(service);
+
+    }
+
+
+    public float getCurrentSpeed() {
+//        new Thread(runnable2).start();
+//        float speed = 0;
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        List<String> providers = locationManager.getProviders(true);
+        Location location;
+        for (String provider : providers) {
+            try {
+                location = locationManager.getLastKnownLocation(provider);
+                if (location != null) {
+                    speed = location.getSpeed();
+                    break;
+                }
+
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+        }
+        return speed;
+
+    }
+
+
+    Runnable runnable2 = new Runnable() {
+        @Override
+        public void run() {
+            currentLocation = getCurrentLocationViaJSON(DEFAULT_LATandLNG.latitude, DEFAULT_LATandLNG.longitude);
+            speed = getCurrentSpeed();
+            if(speed>speedLimit){
+                Log.i("hello", String.valueOf(speed));
+                stopSoundMP.start();
+            }
+            Log.i("Hello", currentLocation);
+        }
+    };
+
+
 
 
 }
