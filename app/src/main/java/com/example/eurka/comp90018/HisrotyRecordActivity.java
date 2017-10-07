@@ -35,6 +35,12 @@ import java.util.concurrent.TimeUnit;
 
 import static com.microsoft.windowsazure.mobileservices.table.query.QueryOperations.val;
 
+/**
+ * This class enable the Azure web service in order to get the data which has been store on the Azure
+ * cloud server, and illustrate the data for the user so user can easily see their history running
+ * data locally.
+ * */
+
 public class HisrotyRecordActivity extends AppCompatActivity {
 
 

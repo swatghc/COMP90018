@@ -27,6 +27,12 @@ import java.util.TimerTask;
  * TODO: Customize class - update intent actions, extra parameters and static
  * helper methods.
  */
+
+/**
+ * This class run as a thread to monitor and store the location data and send it back to the class
+ * (TrackingActivity) which call this service.
+ *
+ * */
 public class MyIntentService extends IntentService {
     // TODO: Rename actions, choose action names that describe tasks that this
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
@@ -59,7 +65,6 @@ public class MyIntentService extends IntentService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i(TAG, "starting!!");
         startLogging();
         return 0;
     }
@@ -78,11 +83,16 @@ public class MyIntentService extends IntentService {
         }
     }
 
+    /**
+     * Start tracking the location
+     * */
     public void startLogging() {
-        Log.i(TAG, "THIS WAS HIT IN THE BACKGROUND SERVICE");
         getCurrentLocation();
     }
 
+    /**
+     * Use timer task to store location data in a arraylist.
+     * */
     public TimerTask mTask = new TimerTask() {
         public void run() {
             getCurrentLocation();
@@ -94,6 +104,9 @@ public class MyIntentService extends IntentService {
         }
     };
 
+    /**
+     * Stop tracking, notify the calling class the tracking has been stopped.
+     * */
     public void stopLogging() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -122,6 +135,9 @@ public class MyIntentService extends IntentService {
         public void onProviderDisabled(String provider) {}
     };
 
+    /**
+     * This method get the location data via a location manager instance.
+     * */
     public void getCurrentLocation(){
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         List<String> providers = lm.getProviders(true);
@@ -157,6 +173,7 @@ public class MyIntentService extends IntentService {
 
     public static final String TRANSACTION_DONE = "done";
 
+    /**Method which notify the caller class the service is finished*/
     private void notifyFinished(){
         int len = locationList.size();
         Log.i(TAG, "In notify Finished the length is :" +String.valueOf(len));

@@ -8,6 +8,9 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * This class is a simple SQLite database adapter which enable local database access and storage.
+ * */
 
 public class DatabaseAdapter {
     public static final String KEY_USERNAME = "username";
@@ -20,6 +23,9 @@ public class DatabaseAdapter {
 
 
 
+    /**
+     * Local databse only have one table, store the user's username, password, and phone number of the emergency contact.
+     * */
     private static final String DATABASE_CREATE = "create table user (_id integer primary key autoincrement, "
             + "username text not null, password text not null, emergencycontact text not null);";
 
@@ -77,7 +83,9 @@ public class DatabaseAdapter {
     public void closeclose() {
         mDbHelper.close();
     }
-
+/**
+ * Allow user to register a new account and insert the info into the database
+ * */
     public long createUser(String username, String password, String contact) {
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_USERNAME, username);

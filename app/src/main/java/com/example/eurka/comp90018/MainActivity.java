@@ -19,6 +19,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/**
+ * This class allow use to login the app using existing account or click the register button to start
+ * creating a new account.
+ * */
+
 public class MainActivity extends AppCompatActivity {
 
     EditText accountEditText;
@@ -26,12 +31,10 @@ public class MainActivity extends AppCompatActivity {
     Button loginButton;
     Button registerButton;
     CheckBox savePasswordCheckBox;
-    private final static String TAG="MainActivity";
     SharedPreferences sp;
     String accountStr;
     String passwordStr;
     private DatabaseAdapter mDbHelper;
-    String emergencycontact;
 
 
     @Override
@@ -52,19 +55,7 @@ public class MainActivity extends AppCompatActivity {
         passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT
                 | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
-        //get emergency contact from registerActivity
 
-
-//        Intent intent1 = this.getIntent();
-//        Bundle bundle = this.getIntent().getExtras();
-//        emergencycontact = bundle.getString("emergencycontact");
-
-
-
-
-
-
-        //login
         loginButton.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -95,12 +86,9 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show();
 
                         Intent intent = new Intent();
-//                        Intent.putExtra("username",accountStr);
                         intent.setClass(MainActivity.this, UserPageActivity.class);
-//                        intent.setClass(MainActivity.this, TrackingActivity.class);
                         Bundle bundle1 = new Bundle();
                         bundle1.putString("username",accountStr);
-                        //bundle1.putString("emergencycontact",emergencycontact);
                         intent.putExtras(bundle1);
                         startActivity(intent);
                     }
@@ -109,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //开启数据库
+        //open the local SQLite database
         mDbHelper = new DatabaseAdapter(this);
         mDbHelper.open();
 
@@ -134,13 +122,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    //this is a comment to test the githubLLLLLLLL
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        emergencycontact = data.getExtras().getString("emergencycontact");//得到新Activity 关闭后返回的数据
-//        Log.i(TAG, emergencycontact);
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

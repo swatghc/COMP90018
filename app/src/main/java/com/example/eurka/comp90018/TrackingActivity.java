@@ -70,11 +70,15 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * This class handle the tracking process of the app, calling the intent service to track and store
+ * the location data, and using this location data to perform calculation.
+ * */
 
 public class TrackingActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    //A LatLng is a point in geographical coordinates: latitude and longitude.
+    //LatLng store a location info with longitude and latitude
     private LatLng DEFAULT_LATandLNG;
     private static final String TAG = "TrackingActivity";
     private ArrayList locationArray = new ArrayList();
@@ -121,14 +125,11 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
 
-//        final MediaPlayer stopSoundMP = MediaPlayer.create(this, R.sound1.stop);
         MediaPlayer stopSoundMP = MediaPlayer.create(this, R.raw.stopsound);
-
-
 
         initializeVariables();
         seekBar.incrementProgressBy(1);
-        // Initialize the textview with '0'.
+
         textView.setText("SPEED LIMIT: " + (seekBar.getProgress()+5) + "m/s");
 
 
@@ -157,11 +158,6 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
 
         }
         });
-
-
-
-
-
 
 
 
@@ -283,6 +279,10 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
     private String startDate;
     private String endDate;
 
+
+    /**
+     * This method get the current location via locationManager
+     * */
     public void getCurrentLocation() {
         double Default_Lat = 0;
         double Default_Lng = 0;
@@ -310,7 +310,6 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
     //stop logging track
     public void stopLogging(View view) {
         layout.setBackgroundColor(Color.parseColor("#39add1"));
-        //submitButton.setEnabled(true);
         stopService(service);
 
         endTime = new Date(System.currentTimeMillis());
@@ -326,8 +325,6 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
                 "Total Distance: "+totalDistance+"M"+"\n"+"Spent Time: "+duriation);
         builder.show();
 
-//        Toast.makeText(TrackingActivity.this, "Total Distance: " + totalDistance + "KM" + "  Spent Time: " + duriation, Toast.LENGTH_SHORT).show();
-
     }
 
     public String formattingMs(long period) {
@@ -340,6 +337,9 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
         return h + ":" + m + ":" + s;
     }
 
+    /**
+     * Once th user click the submit button, send the user running data to the Azure cloud server
+     * */
     public void submit(View view) {
 
         if (TextUtils.isEmpty(startDate) || TextUtils.isEmpty(endDate) || endDate.compareTo(startDate) <= 0) {
@@ -385,6 +385,10 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
         return entity;
     }
 
+    /**
+     * When user click the SOS button, this method will create a thread to convert the LatLng object
+     * to the actual address, and send the sms contains the actual address to the emegernct contact
+     * */
     public void emergencyFunction(View view) {
         getCurrentLocation();
         layout.setBackgroundColor(Color.parseColor("#38d145"));
@@ -409,6 +413,9 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
 
     }
 
+    /**
+     * create a thread in order to use web access to convert the LatLng to the actual address
+     * */
     Runnable runnable = new Runnable() {
         @Override
         public void run() {
@@ -418,7 +425,7 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
         }
     };
 
-
+    // mark the user the running track on the map.
     private BroadcastReceiver locationReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -438,7 +445,7 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
                         .strokeWidth(0));
             }
 
-//            double distance = 0;
+            //calculate the total running distance of the user
             for (int i = 0; i < array.length - 1; i++) {
                 float[] results = new float[1];
                 Location.distanceBetween(array[i].latitude,array[i].longitude,array[i+1].latitude,array[i+1].longitude,results);
@@ -455,31 +462,10 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
         super.onStop();
     }
 
-    //method be used to calculate the distance between two LatLng objects.
-    public double CalculationByDistance(LatLng StartP, LatLng EndP) {
-        int Radius = 6371;// radius of earth in Km
-        double lat1 = StartP.latitude;
-        double lat2 = EndP.latitude;
-        double lon1 = StartP.longitude;
-        double lon2 = EndP.longitude;
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLon = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
-                + Math.cos(Math.toRadians(lat1))
-                * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
-                * Math.sin(dLon / 2);
-        double c = 2 * Math.asin(Math.sqrt(a));
-        double valueResult = Radius * c;
-        double km = valueResult / 1;
-        DecimalFormat newFormat = new DecimalFormat("####");
-        int kmInDec = Integer.valueOf(newFormat.format(km));
-        double meter = valueResult % 1000;
-        int meterInDec = Integer.valueOf(newFormat.format(meter));
-        Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec
-                + " Meter   " + meterInDec);
 
-        return Radius * c;
-    }
+    /**
+     * This method convert the LatLng to the actual address via google map api.
+     * */
 
     public static JSONObject getLocationInfo(double lat, double lng) {
         try {
@@ -508,6 +494,7 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
         return null;
     }
 
+    /**This method parse the received address json obejct to a readable string*/
     public static String getCurrentLocationViaJSON(double lat, double lng) {
 
         JSONObject jsonObj = getLocationInfo(lat, lng);

@@ -10,6 +10,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/**
+ * This class handle the task when user creating a new account for this app.
+ * */
+
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText mUserText;
@@ -38,7 +42,10 @@ public class RegisterActivity extends AppCompatActivity {
         Button confirmButton = (Button) findViewById(R.id.regBT);
         Button cancelButton = (Button) findViewById(R.id.canBT);
 
-
+        /**
+         * Here check whether the input message by the user is legal or not, and inform user with
+         * error message.
+         * */
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,11 +71,6 @@ public class RegisterActivity extends AppCompatActivity {
                         Toast.makeText(RegisterActivity.this, "register success!",
                                 Toast.LENGTH_SHORT).show();
 
-//                        Intent intent = new Intent();
-//                        intent.setClass(RegisterActivity.this, MainActivity.class);
-//                        intent.putExtra("emergencycontact",emeContact);
-//                        RegisterActivity.this.setResult(RESULT_OK,intent);
-//                        RegisterActivity.this.finish();
                         Intent intent = new Intent();
                         intent.setClass(RegisterActivity.this,MainActivity.class);
                         startActivity(intent);
