@@ -142,6 +142,7 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="10dp"
                     android:backgroundTint="@android:color/holo_orange_light"
+                    android:background="@drawable/rounded_button"
                     android:text="Cancel"
                     android:textStyle="bold"></Button>
 
@@ -152,6 +153,7 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="10dp"
                     android:backgroundTint="@android:color/holo_orange_light"
+                    android:background="@drawable/rounded_button"
                     android:text="Regisiter"
                     android:textStyle="bold"></Button>
             </LinearLayout>

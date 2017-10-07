@@ -33,7 +33,8 @@
 
     <include
         android:id="@+id/include"
-        layout="@layout/content_main" />
+        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+        layout="@layout/content_main"/>
 
 </android.support.design.widget.CoordinatorLayout>
 
