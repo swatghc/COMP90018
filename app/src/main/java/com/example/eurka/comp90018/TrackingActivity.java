@@ -20,7 +20,6 @@ import android.telephony.SmsManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -60,7 +59,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -77,15 +75,12 @@ import java.util.concurrent.TimeUnit;
 
 public class TrackingActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    private GoogleMap mMap;
+    private GoogleMap myMap;
     //LatLng store a location info with longitude and latitude
-    private LatLng DEFAULT_LATandLNG;
-    private static final String TAG = "TrackingActivity";
+    private LatLng currentLatLng;
     private ArrayList locationArray = new ArrayList();
-    public String title = "";
     private Intent service;
     private LinearLayout layout;
-    private Button submitButton;
     private String username;
     private String emergencycontact;
     private double totalDistance;
@@ -247,16 +242,16 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
     //Callback method implement the interface, be used when the map is ready to be used.
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        myMap = googleMap;
         getCurrentLocation();
 
         //Returns a CameraUpdate that moves the center of the screen to a latitude and longitude specified by a LatLng object,
         // and moves to the given zoom level.
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LATandLNG, 17.0f));
+        myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 17.0f));
 
         try {
             // My Location button appears in the top right corner of the map.
-            mMap.setMyLocationEnabled(true);
+            myMap.setMyLocationEnabled(true);
         } catch (SecurityException ex) {
             ex.printStackTrace();
         }
@@ -264,8 +259,8 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
     }
 
 
-    //start logging the track via MyIntentService
-    public void startLogging(View view) {
+    //start recording the track via MyIntentService
+    public void startRecording(View view) {
         layout.setBackgroundColor(Color.parseColor("#51b46d"));
         Log.i("hello", emergencycontact);
         service = new Intent(this, MyIntentService.class);
@@ -302,13 +297,13 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
                 e.printStackTrace();
             }
         }
-        DEFAULT_LATandLNG = new LatLng(Default_Lat, Default_Lng);
+        currentLatLng = new LatLng(Default_Lat, Default_Lng);
 
     }
 
 
-    //stop logging track
-    public void stopLogging(View view) {
+    //stop recording user's track
+    public void stopRecording(View view) {
         layout.setBackgroundColor(Color.parseColor("#39add1"));
         stopService(service);
 
@@ -419,7 +414,7 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
     Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            currentLocation = getCurrentLocationViaJSON(DEFAULT_LATandLNG.latitude, DEFAULT_LATandLNG.longitude);
+            currentLocation = getCurrentLocationViaJSON(currentLatLng.latitude, currentLatLng.longitude);
 
             Log.i("Hey", currentLocation);
         }
@@ -429,7 +424,6 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
     private BroadcastReceiver locationReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i(TAG, "map activity Reciever HIT");
             locationArray = intent.getParcelableArrayListExtra("locationData");
             LatLng[] array = new LatLng[locationArray.size()];
             int len = array.length;
@@ -437,8 +431,8 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
             locationArray.toArray(array);
             for (int i = 0; i < array.length; i++) {
                 double lat = array[i].latitude;
-                Log.i(TAG, String.valueOf(lat));
-                mMap.addCircle(new CircleOptions()
+                Log.i("hello", String.valueOf(lat));
+                myMap.addCircle(new CircleOptions()
                         .center(array[i])
                         .radius(9)
                         .fillColor(0x7f0000ff)
@@ -747,7 +741,7 @@ public class TrackingActivity extends FragmentActivity implements OnMapReadyCall
     Runnable runnable2 = new Runnable() {
         @Override
         public void run() {
-            currentLocation = getCurrentLocationViaJSON(DEFAULT_LATandLNG.latitude, DEFAULT_LATandLNG.longitude);
+            currentLocation = getCurrentLocationViaJSON(currentLatLng.latitude, currentLatLng.longitude);
             speed = getCurrentSpeed();
             if(speed>speedLimit){
                 Log.i("hello", String.valueOf(speed));

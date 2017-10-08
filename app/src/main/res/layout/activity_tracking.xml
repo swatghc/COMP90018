@@ -49,7 +49,7 @@
             android:layout_weight="1"
             android:backgroundTint="@android:color/holo_orange_light"
             android:background="@drawable/rounded_button"
-            android:onClick="startLogging"
+            android:onClick="startRecording"
             android:text="START"
             android:textStyle="bold" />
 
@@ -60,7 +60,7 @@
             android:layout_weight="1"
             android:backgroundTint="@android:color/holo_orange_light"
             android:background="@drawable/rounded_button"
-            android:onClick="stopLogging"
+            android:onClick="stopRecording"
             android:text="End"
             android:textStyle="bold" />
 

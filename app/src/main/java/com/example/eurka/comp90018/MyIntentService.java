@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
-import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
@@ -37,7 +36,6 @@ public class MyIntentService extends IntentService {
     // TODO: Rename actions, choose action names that describe tasks that this
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     private LatLng DEFAULT_LATandLNG;
-    public Timer mTimer;
     private ArrayList locationList = new ArrayList();
     private Location location;
     private static final String ACTION_FOO = "start";
@@ -65,7 +63,7 @@ public class MyIntentService extends IntentService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        startLogging();
+        startRecording();
         return 0;
     }
 
@@ -76,9 +74,9 @@ public class MyIntentService extends IntentService {
             final String action = intent.getStringExtra("action");
             Log.i(TAG, action);
             if (ACTION_FOO.equals(action)) {
-                startLogging();
+                startRecording();
             } else if (ACTION_BAZ.equals(action)) {
-                stopLogging();
+                stopRecording();
             }
         }
     }
@@ -86,7 +84,7 @@ public class MyIntentService extends IntentService {
     /**
      * Start tracking the location
      * */
-    public void startLogging() {
+    public void startRecording() {
         getCurrentLocation();
     }
 
@@ -107,7 +105,7 @@ public class MyIntentService extends IntentService {
     /**
      * Stop tracking, notify the calling class the tracking has been stopped.
      * */
-    public void stopLogging() {
+    public void stopRecording() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -119,7 +117,7 @@ public class MyIntentService extends IntentService {
     @Override
     public void onDestroy(){
         Log.i(TAG,"Destroyed!!!");
-        stopLogging();
+        stopRecording();
     }
 
     LocationListener locationListener = new LocationListener() {
